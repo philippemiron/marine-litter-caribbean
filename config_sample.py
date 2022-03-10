@@ -7,6 +7,7 @@ folder_wind = '[path surface wind velocity]'
 folder_output = '[basepath]/caribbean_marine_litter/data/output'
 folder_release = '[basepath]/caribbean_marine_litter/data/process/release_locations'
 files_release = [join(folder_release, 'file1.csv'), join(folder_release, 'file2.csv')]
+files_boundary = [join(folder_release, 'inputs.csv')]
 file_unbeach = '[path to vector fields use for unbeaching]'
 
 # temporal settings

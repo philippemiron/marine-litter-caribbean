@@ -31,7 +31,7 @@ def hycom_fieldset(base_folder: str, start_date: datetime, end_date: datetime) -
     # trim before and after the time period
     i0 = [i for i, f in enumerate(filenames) if start_date.strftime("%Y%m%d") in f][0]
     i1 = [i for i, f in enumerate(filenames) if end_date.strftime("%Y%m%d") in f][-1]
-    filenames = filenames[i0:i1+1]
+    filenames = filenames[i0-1:i1+1]
     
     if len(filenames) == 0:
         raise Exception("Error: No HYCOM current file found.")
@@ -50,8 +50,8 @@ def hycom_fieldset(base_folder: str, start_date: datetime, end_date: datetime) -
     # TODO: switch to regional model and remove
     # for now we subset GLBv0.08 inside the Caribbean
     indices = {
-        'lat': range(1500, 1889), # 0.0ºN, 31.0ºN
-        'lon': range(1012, 1616), # 99.0ºW, 50.8ºW
+        'lat': range(1500, 1894), # 0.0ºN, 31.52ºN
+        'lon': range(1012, 1615), # 99.04ºW, -51.12ºW 1611
     }
     
     # chunksize: 128 to 512 are typically most effective (from parcel doc)

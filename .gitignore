@@ -2,6 +2,8 @@
 data/raw/*.tif
 data/raw/temp/*
 data/output/*.nc
+.ipynb_checkpoints
+.nfs*
 
 # config
 config.py
