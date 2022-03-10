@@ -22,7 +22,7 @@ from docopt import docopt
 from datetime import datetime, timedelta
 from distutils.util import strtobool
 
-from parcels import FieldSet, ParticleSet, ErrorCode, AdvectionRK4
+from parcels import FieldSet, ParticleSet, ErrorCode, AdvectionRK4, DiffusionUniformKh
 from particles import LitterParticle, coastal_particles, entering_particles
 from kernels import *
 from fields import hycom_fieldset, jra55_fieldset, diffusion_field, unbeaching_field
@@ -36,18 +36,17 @@ except ImportError:
 
 
 def run(start_date, end_date, name='', winds=False, diffusion=False, unbeaching=False, restart_file=""):
-
-    f_current = hycom_fieldset(config.folder_current, start_date, end_date) # hycom ocean
+    f_current = hycom_fieldset(config.folder_current, start_date, end_date)  # hycom ocean
 
     if winds:
-        f_wind = jra55_fieldset(config.folder_wind, start_date, end_date, config.k_wind) # jra55 wind
+        f_wind = jra55_fieldset(config.folder_wind, start_date, end_date, config.k_wind)  # jra55 wind
         main_fieldset = FieldSet(U=f_current.U + f_wind.U, V=f_current.V + f_wind.V)
     else:
         main_fieldset = FieldSet(U=f_current.U, V=f_current.V)
 
     # add diffusion or an unbeaching field to the main field
     if diffusion:
-        diffusion_field(main_fieldset, f_current.U.grid.lat, f_current.U.grid.lon, config.kh)
+        diffusion_field(main_fieldset, config.kh)
     if unbeaching:
         unbeaching_field(main_fieldset, f_current.U.grid.lat, f_current.U.grid.lon, config.file_unbeach)
 
@@ -72,8 +71,7 @@ def run(start_date, end_date, name='', winds=False, diffusion=False, unbeaching=
                            time=df.date.values,
                            repeatdt=config.repeat_release)  # reinjection (default: None)
         print(f"{pset.size} particles ({len(df_coasts_rivers)} at coast & rivers, "
-              f"{len(df_inputs)} at the boundaries) define for the monthly release.",
-              flush=True)
+              f"{len(df_inputs)} at the boundaries) define for the monthly release.", flush=True)
 
     file_output = join(config.folder_output, f'{name}.nc')
     outfile = pset.ParticleFile(name=file_output, outputdt=config.output_freq)
@@ -92,7 +90,7 @@ def run(start_date, end_date, name='', winds=False, diffusion=False, unbeaching=
             kernels += pset.Kernel(BeachTesting_2D)
     else:
         if diffusion:
-            kernels += pset.Kernel(BrownianMotion2D)
+            kernels += pset.Kernel(DiffusionUniformKh)
 
     run_time = timedelta(seconds=(end_date - start_date).total_seconds())
 
@@ -103,7 +101,7 @@ def run(start_date, end_date, name='', winds=False, diffusion=False, unbeaching=
                  output_file=outfile)
 
     print(f"Saving output to {file_output}.")
-    outfile.export() # to make sure the output file is generated
+    outfile.export()  # to make sure the output file is generated
 
     if MPI:
         print(f"Waiting for file to be saved process {MPI.COMM_WORLD.Get_rank()}.", flush=True)
@@ -126,7 +124,7 @@ if __name__ == "__main__":
 
     print(f"\nMarine litter: Caribbean subregion")
     print(
-        f"Parameters: {start_date}->{end_date} winds={winds} diffusion={diffusion} ... "
+        f"Parameters: {start_date}->{end_date} winds={winds} diffusion={diffusion} "
         f"unbeaching={unbeaching} name={name} restart_file={restart_file}"
     )
 
