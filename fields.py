@@ -56,7 +56,8 @@ def hycom_fieldset(base_folder: str, start_date: datetime, end_date: datetime) -
     # add full years
     filenames = []
     for year in range(start_date.year, end_date.year + 1):
-        filenames.extend(glob.glob(join(base_folder, f'{year}', 'hycom_GLBv0.08_*.nc')))
+        for h in range(0,24,3): # avoid reading filenames with hours > 21
+            filenames.extend(glob.glob(join(base_folder, f'{year}', f'hycom_GLBv0.08_*_t0{h:02d}.nc')))
     filenames = sorted(filenames)
 
     # file format hycom_GLBv0.08_XXX_2021010112_t000.nc
@@ -118,7 +119,8 @@ def jra55_fieldset(base_folder: str, start_date: datetime, end_date: datetime, k
     # add full years
     filenames = []
     for year in range(start_date.year, end_date.year + 1):
-        filenames.extend(glob.glob(join(base_folder, f'{year}w', 'JRA55_GLBv0.08_*.nc')))
+        for h in range(0,24,3): # avoid reading filenames with hours > 21
+            filenames.extend(glob.glob(join(base_folder, f'{year}w', f'JRA55_GLBv0.08_*_t0{h:02d}.nc')))
     filenames = sorted(filenames)
 
     # file format JRA55_GLBv0.08_20210101_t000.nc
@@ -156,9 +158,8 @@ def jra55_fieldset(base_folder: str, start_date: datetime, end_date: datetime, k
                                 chunksize=cs,
                                 allow_time_extrapolation=True)  # avoid issue when a file is missing
 
-    if k_wind:
-        fset.U.set_scaling_factor(k_wind)
-        fset.V.set_scaling_factor(k_wind)
+    fset.U.set_scaling_factor(k_wind)
+    fset.V.set_scaling_factor(k_wind)
 
     return fset
 
@@ -173,6 +174,7 @@ def diffusion_field(fset: FieldSet, kh: float):
     """
     fset.add_constant_field("Kh_zonal", kh, mesh='spherical')
     fset.add_constant_field("Kh_meridional", kh, mesh='spherical')
+    fset.add_constant("dres", 0.00005)
 
 
 def unbeaching_field(fset: FieldSet, lat: np.array, lon: np.array, input_file):
