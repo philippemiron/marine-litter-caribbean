@@ -1,17 +1,5 @@
-from parcels import rng as random
+import parcels.rng as ParcelsRandom
 import math
-
-
-def BrownianMotion2D(particle, fieldset, time):
-    """
-    Kernel for simple Brownian particle diffusion in zonal and meridional direction.
-    Assumes that fieldset has fields Kh_zonal and Kh_meridional
-    """
-    r = 1 / 3.
-    kh_meridional = fieldset.Kh_meridional[time, particle.depth, particle.lat, particle.lon]
-    particle.lat += random.uniform(-1., 1.) * math.sqrt(2 * math.fabs(particle.dt) * kh_meridional / r)
-    kh_zonal = fieldset.Kh_zonal[time, particle.depth, particle.lat, particle.lon]
-    particle.lon += random.uniform(-1., 1.) * math.sqrt(2 * math.fabs(particle.dt) * kh_zonal / r)
 
 
 # two functions that can be used to identify
