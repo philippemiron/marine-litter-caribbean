@@ -56,10 +56,13 @@ def entering_particles(config, start_date: datetime) -> pd.DataFrame:
     # assuming monthly releases
     assert (start_date.day == 1)  # start at the beginning of the month
     end_date = start_date + relativedelta(months=1) + timedelta(days=-1)  # end of the release month
+    
+    if config.files_boundary:
+        df = pd.concat([pd.read_csv(file, parse_dates=['date']) for file in config.files_boundary], ignore_index=True,
+                       axis=0)
+        df = df.loc[np.logical_and(df['date'] >= start_date, df['date'] < end_date)]
+        columns = ['country id', 'longitude', 'latitude', 'date', 'weight [ton]']
 
-    df = pd.concat([pd.read_csv(file, parse_dates=['date']) for file in config.files_boundary], ignore_index=True,
-                   axis=0)
-    df = df.loc[np.logical_and(df['date'] >= start_date, df['date'] < end_date)]
-    columns = ['country id', 'longitude', 'latitude', 'date', 'weight [ton]']
-
-    return df[columns]
+        return df[columns]
+    else:
+        None
