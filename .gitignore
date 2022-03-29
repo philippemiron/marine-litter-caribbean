@@ -9,6 +9,17 @@ data/output/out-*/*
 
 # config
 config.py
+config_uniform.py
+
+<<<<<<< HEAD
+# backup python file
+*.npy
+=======
+# data not included
+*.npy
+*.csv
+*.nc
+>>>>>>> 058b3a59da89cb77391e9e9963d316dd7e543ca9
 
 # dask
 dask-worker-space/

@@ -26,7 +26,7 @@ from parcels import FieldSet, ParticleSet, ErrorCode, AdvectionRK4, DiffusionUni
 from particles import LitterParticle, coastal_particles, entering_particles
 from kernels import *
 from fields import hycom_fieldset, jra55_fieldset, diffusion_field, unbeaching_field
-import config
+import config_uniform as config
 
 try:
     from mpi4py import MPI
@@ -56,7 +56,8 @@ def run(start_date, end_date, name='', winds=False, diffusion=False, unbeaching=
         pset = ParticleSet.from_particlefile(fieldset=main_fieldset,  # advection field
                                              pclass=LitterParticle,  # custom marine litter particle
                                              filename=restart_file,  # assign (lat,lon) from ParticleFile
-                                             repeatdt=config.repeat_release)  # reinjection (default: None)
+                                             repeatdt=config.repeat_release,  # reinjection (default: None)
+                                             restart=True) 
         print(f"{pset.size} particles read from the restart file.", flush=True)
 
     else:
@@ -95,7 +96,7 @@ def run(start_date, end_date, name='', winds=False, diffusion=False, unbeaching=
     run_time = timedelta(seconds=(end_date - start_date).total_seconds())
 
     pset.execute(kernels,  # the kernels (define how particles move)
-                 runtime=run_time,  # the total length of the run
+                 endtime=end_date,  # end of the run
                  dt=config.dt,  # the time step of the kernel
                  recovery={ErrorCode.ErrorOutOfBounds: DeleteParticle},
                  output_file=outfile)
