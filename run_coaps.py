@@ -20,11 +20,11 @@ def particles_left(file):
 nb_proc = 16
 use_mpi = True
 # monthly releases of particles
-batch_start = datetime(2010, 2, 1)  # starting date from batch_start to batch_end
+batch_start = datetime(2010, 1, 1)  # starting date from batch_start to batch_end
 batch_end = datetime(2012, 1, 1)
 end_date = datetime(2022, 1, 1)  # end date is always end_date
 folder = 'data/output/'  # output folder
-name = f"cm_uniform_mpw_{batch_start.year}_{batch_start.month:02d}"  # filename
+basename = 'cm_uniform_mpw'
 winds = 'True'  # include windage
 diffusion = 'True'  # include diffusion
 unbeach = 'False'  # include unbeach fields
@@ -36,6 +36,7 @@ assert (batch_start.day == end_date.day)
 while batch_start < batch_end:
     run_start = batch_start
     run_end = batch_start + relativedelta(months=1)
+    name = f"{basename}_{batch_start.year}_{batch_start.month:02d}"  # filename
     nb_parts = nb_proc  # initialize so it uses mpi if set
     i = 1
     mpi = use_mpi
@@ -66,5 +67,3 @@ while batch_start < batch_end:
 
     # start the next monthly release
     batch_start += relativedelta(months=1)
-    name = f"cm_mpw_{batch_start.year}_{batch_start.month:02d}"
-
