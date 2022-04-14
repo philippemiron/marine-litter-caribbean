@@ -78,20 +78,13 @@ def hycom_fieldset(base_folder: str, start_date: datetime, end_date: datetime) -
         'time': 'time',
     }
 
-    # TODO: switch to regional model and remove
-    # for now we subset GLBv0.08 inside the Caribbean
-    indices = {
-        'lat': range(1500, 1894),  # 0.0ºN, 31.52ºN
-        'lon': range(1012, 1615),  # 99.04ºW, -51.12ºW 1611
-    }
-
     # chunk size of 128 to 512 are typically most effective (from parcel doc)
-    cs = {'time': ('time', 1), 'lat': ('latitude', 512), 'lon': ('longitude', 512)}
+    cs = {'time': ('time', 1), 'lat': ('latitude', 128), 'lon': ('longitude', 128)}
 
     fset = FieldSet.from_netcdf(filenames,
                                 variables,
                                 dimensions,
-                                indices=indices,
+                                #indices=indices,
                                 deferred_load=True,
                                 chunksize=cs,
                                 allow_time_extrapolation=True)  # avoid issue when a file is missing
@@ -140,20 +133,13 @@ def jra55_fieldset(base_folder: str, start_date: datetime, end_date: datetime, k
         'time': 'time',
     }
 
-    # TODO: switch to regional wind model and remove
-    # for now we subset JRA55_GLBv0.08 inside the Caribbean
-    indices = {
-        'lat': range(1500, 1889),  # 0.0ºN, 31.0ºN
-        'lon': range(1012, 1616),  # 99.0ºW, 50.8ºW
-    }
-
     # chunksize: 128 to 512 are typically most effective (from parcel doc)
-    cs = {'time': ('time', 1), 'lat': ('latitude', 512), 'lon': ('longitude', 512)}
+    cs = {'time': ('time', 1), 'lat': ('latitude', 128), 'lon': ('longitude', 128)}
 
     fset = FieldSet.from_netcdf(filenames,
                                 variables,
                                 dimensions,
-                                indices=indices,
+                                #indices=indices,
                                 deferred_load=True,
                                 chunksize=cs,
                                 allow_time_extrapolation=True)  # avoid issue when a file is missing

@@ -26,7 +26,7 @@ from parcels import FieldSet, ParticleSet, ErrorCode, AdvectionRK4, DiffusionUni
 from particles import LitterParticle, coastal_particles, entering_particles
 from kernels import *
 from fields import hycom_fieldset, jra55_fieldset, diffusion_field, unbeaching_field
-import config_uniform as config
+import config
 
 try:
     from mpi4py import MPI
@@ -53,7 +53,7 @@ def run(start_date, end_date, name='', winds=False, diffusion=False, unbeaching=
     # particles are set from initial locations or from the restart file
     if restart_file:
         print(f'Using restart file {restart_file}.')
-        pset = ParticleSet.from_particlefile(fieldset=main_fieldset,  # advection field
+        pset = ParticleSet.from_particlefile(fieldset=main_fieldset, # advection field
                                              pclass=LitterParticle,  # custom marine litter particle
                                              filename=restart_file,  # assign (lat,lon) from ParticleFile
                                              repeatdt=config.repeat_release,  # reinjection (default: None)
@@ -71,8 +71,10 @@ def run(start_date, end_date, name='', winds=False, diffusion=False, unbeaching=
                            lat=df.latitude,
                            time=df.date.values,
                            repeatdt=config.repeat_release)  # reinjection (default: None)
-        print(f"{pset.size} particles ({len(df_coasts_rivers)} at coast & rivers, "
-              f"{len(df_inputs)} at the boundaries) define for the monthly release.", flush=True)
+
+        print(f'{pset.size} particles ({len(df_coasts_rivers)} at coast & rivers', end='', flush=True)
+        print(f', {len(df_inputs)} at the boundaries) ' if len(df_inputs) else ') ', end='', flush=True)
+        print(f'define for the monthly release.', flush=True)
 
     file_output = join(config.folder_output, f'{name}.nc')
     outfile = pset.ParticleFile(name=file_output, outputdt=config.output_freq)

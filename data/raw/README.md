@@ -5,8 +5,7 @@
 - Lebreton, laurent; Reisser, Julia (2018): Supplementary data for 'River plastic emissions to the world's oceans'. 
   figshare. [Dataset](https://doi.org/10.6084/m9.figshare.4725541.v6)
 - Jambeck Jambeck, J. R., Geyer, R., Wilcox, C., Siegler, T. R., Perryman, M., Andrady, A., & Law, K. L. (2015). 
-  Plastic waste inputs from land into the ocean. Science, 347(6223), 768-771, https://ourworldindata.
-  org/grapher/mismanaged-plastic-waste, Dataset [2010](https://ourworldindata.org/grapher/mismanaged-plastic-waste) and
+  Plastic waste inputs from land into the ocean. Science, 347(6223), 768-771, https://ourworldindata.org/grapher/mismanaged-plastic-waste, Dataset [2010](https://ourworldindata.org/grapher/mismanaged-plastic-waste) and
   [2025](https://ourworldindata.org/grapher/mismanaged-plastic-waste-in-2025).
 - Global netCDF grid (1x1 arc minute) with distances to the nearest GSHHG shoreline in km (with negative distances 
   in the oceans) 
