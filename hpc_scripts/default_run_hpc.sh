@@ -12,12 +12,13 @@ module load openmpi/4.1.0
 module load netcdf
 module load anaconda
 
+eval "$(conda shell.bash hook)"  # otherwise conda doesn't activate
 conda activate parcels_mpi
 
 start_date_str="20YEAR-MONTH-01"
 end_date_str="2022-01-01"
-output_path="/gpfs/research/coaps/pmiron/caribbean-marine-litter/data/output/cm_mpw/"
-executable_path="/gpfs/research/coaps/pmiron/caribbean-marine-litter/"
+output_path="/gpfs/research/coaps/pmiron/caribbean-marine-litter/data/output/cm_mpw"
+executable_path="/gpfs/research/coaps/pmiron/caribbean-marine-litter"
 basename="cm_mpw"
 days_per_run=30
 
@@ -44,11 +45,11 @@ do
   if [ $t -eq  0 ]
   then
     # run from initial position
-    cmd="srun python caribbean_model.py ${c_start_date}:0 ${c_end_date}:0 True True False ${basename}_${start_date_str}_${fi}"
+    cmd="srun python ${executable_path}/caribbean_model.py ${c_start_date}:0 ${c_end_date}:0 True True False ${basename}_${start_date_str}_${fi}"
   else
     # start from restart file
     fileindex=
-    cmd="srun python ${executable_path}/caribbean_model.py ${c_start_date}:0 ${c_end_date}:0 True True False ${basename}_${start_date_str}_${fi} $output_path/${basename}_${start_date_str}_${fp}.nc"
+    cmd="srun python ${executable_path}/caribbean_model.py ${c_start_date}:0 ${c_end_date}:0 True True False ${basename}_${start_date_str}_${fi} ${output_path}/${basename}_${start_date_str}_${fp}.nc"
   fi
   echo $cmd
   `$cmd > 'run20YEAR_MONTH.log'`
@@ -70,6 +71,6 @@ do
 done
 
 # combine intermediate files
-cmd="srun python ${executable_path}/run_tools.py ${output_path} ${basename} ${start_date_str} True True"
+cmd="python ${executable_path}/run_tools.py ${output_path} ${basename} ${start_date_str} True True"
 echo $cmd
 `$cmd > 'run20YEAR_MONTH.log'`
