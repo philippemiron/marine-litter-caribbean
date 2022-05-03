@@ -60,8 +60,9 @@ def combine(folder, basename, start_date):
             ptime = (df.time[:,0].values / seconds_per_day)
             ptime = (ptime - np.nanmin(ptime)).astype('int') # days
             pdelayed = ptime > 0  #  particles can start later in the first month
-            lon[j[pdelayed], k] = np.array([np.roll(row, shift) for row,shift in zip(df.lon[pdelayed, :], ptime[pdelayed])])
-            lat[j[pdelayed], k] = np.array([np.roll(row, shift) for row,shift in zip(df.lat[pdelayed, :], ptime[pdelayed])])
+            if np.any(pdelayed):
+                lon[j[pdelayed], k] = np.array([np.roll(row, shift) for row,shift in zip(df.lon[pdelayed, :], ptime[pdelayed])])
+                lat[j[pdelayed], k] = np.array([np.roll(row, shift) for row,shift in zip(df.lat[pdelayed, :], ptime[pdelayed])])
             offset += df.dims['obs']
         else:
             k = slice(offset, offset+df.dims['obs']-1)

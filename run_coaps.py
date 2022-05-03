@@ -49,3 +49,4 @@ print('Combining and cleaning monthly files')
 cmd = f"python run_tools.py {folder} {basename} {start_date.strftime('%Y-%m-%d')} True True"
 print(cmd)
 subprocess.call(cmd, shell=True)
+
